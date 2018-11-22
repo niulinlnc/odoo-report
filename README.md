@@ -1,2 +1,2 @@
-# odoo-report
-odoo打印相关
+# report
+打印相关
