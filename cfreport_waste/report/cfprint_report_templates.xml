@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+<!-- 订单/询价单 -->
+<template id="report_waste">
+    <t t-call="cfprint.html_container">   <!-- 这里调用 cfprint.html_container ，以便于引入康虎云报表JavaScript基础库-->
+        <div t-if="len(docs) &lt;= 0"><h2 style="text-align: center;">没有可打印的数据，请返回。</h2></div>
+        <div t-if="len(docs) &gt; 0"><h2 style="text-align: center;">正在打印，请稍候...</h2></div>
+
+<!--必须先安装cfprint模块，以引入基础类库-->
+<script type="text/javascript">
+var cfprint_addr = "127.0.0.1";   //打印服务器监听地址
+var _delay_close = -1;          //打印完成后关闭窗口的延时时长(毫秒), -1则表示不关闭
+
+/******************************* 康虎云报表与ODOO集成时，模板调用方法 **********************************/
+/*方法1： 从数据库中获取打印模板（调用简短方法）（在正式使用时要把全角尖括号替换成半角尖括号，并且把sale_order_demo换成实际的模板templ_id）（在真正使用时，必须把全角尖括号改成半角）：*/
+var _data = {"template": "base64:<t t-esc="get_cf_template(user.env, 'waste')" />", "ver": 4, "Copies": 1, "Duplex": 0, "Tables":[]};
+/*******************************************************************************************************/
+
+
+//生成表结构
+var _tableWaste = {
+    "Name": "Waste_transfer_form",
+    "Cols":[
+		{ "type": "str", "size": 100, "name": "generate_unit_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "generate_unit_address", "required": false },
+		{ "type": "str", "size": 50, "name": "generate_unit_tel", "required": false },
+		{ "type": "str", "size": 50, "name": "generate_unit_zipcode", "required": false },
+		{ "type": "str", "size": 100, "name": "transport_unit_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "transport_unit_address", "required": false },
+		{ "type": "str", "size": 100, "name": "transport_unit_tel", "required": false },
+		{ "type": "str", "size": 50, "name": "transport_unit_zipcode", "required": false },
+		{ "type": "str", "size": 100, "name": "receiving_unit_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "receiving_unit_address", "required": false },
+		{ "type": "str", "size": 50, "name": "receiving_unit_tel", "required": false },
+		{ "type": "str", "size": 50, "name": "receiving_unit_zipcode", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_id", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_code_l", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_code_m", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_code_r", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_type_id", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_feature_id", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_packing_id", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_pattern_id", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_danger_ids", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_ban_ids", "required": false },
+		{ "type": "str", "size": 255, "name": "quantity", "required": false },
+		{ "type": "str", "size": 255, "name": "quantity_plan", "required": false },
+		{ "type": "str", "size": 255, "name": "quantity_remaining", "required": false },
+		{ "type": "str", "size": 255, "name": "transfer_purpose_storage", "required": false },
+		{ "type": "str", "size": 255, "name": "transfer_purpose_use", "required": false },
+		{ "type": "str", "size": 255, "name": "transfer_purpose_incineration", "required": false },
+		{ "type": "str", "size": 255, "name": "transfer_purpose_landfill", "required": false },
+		{ "type": "str", "size": 255, "name": "transfer_purpose_other", "required": false },
+		{ "type": "str", "size": 255, "name": "shipper_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "transfer_destination", "required": false },
+		{ "type": "str", "size": 255, "name": "transfer_date", "required": false },
+		{ "type": "str", "size": 255, "name": "first_carrier_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "date_shipment_first_carrier", "required": false },
+		{ "type": "str", "size": 255, "name": "first_vehicle_id", "required": false },
+		{ "type": "str", "size": 255, "name": "first_rtc_number", "required": false },
+		{ "type": "str", "size": 255, "name": "first_vehicle_model_id", "required": false },
+		{ "type": "str", "size": 255, "name": "first_starting_point", "required": false },
+		{ "type": "str", "size": 255, "name": "first_through_place", "required": false },
+		{ "type": "str", "size": 255, "name": "first_transport_destination", "required": false },
+		{ "type": "str", "size": 255, "name": "first_driver_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "receiving_unit_license_id", "required": false },
+		{ "type": "str", "size": 255, "name": "receiver_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "receipt_date", "required": false },
+		{ "type": "str", "size": 255, "name": "quantity_actual_receipt", "required": false },
+		{ "type": "str", "size": 255, "name": "receiving_unit_contact_partner_id", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_disposal_method_use_material", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_disposal_method_use_energy", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_disposal_method_handle_incineration", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_disposal_method_handle_chemistry", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_disposal_method_handle_landfill", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_disposal_method_handle_other", "required": false },
+		{ "type": "str", "size": 255, "name": "waste_disposal_method_storage", "required": false },
+
+    ],
+    "Data":[ ]
+};
+
+
+/*生成主表数据*/
+<t t-foreach="docs" t-as="doc">
+
+_tableWaste.Data.push(
+{
+	"generate_unit_partner_id": "<t t-if="doc.generate_unit_partner_id.name" t-esc="doc.generate_unit_partner_id.name"/>",
+	"generate_unit_address": "<t t-if="doc.generate_unit_address" t-esc="doc.generate_unit_address"/>",
+	"generate_unit_tel": "<t t-if="doc.generate_unit_tel" t-esc="doc.generate_unit_tel"/>",
+	"generate_unit_zipcode": "<t t-if="doc.generate_unit_zipcode" t-esc="doc.generate_unit_zipcode"/>",
+	"transport_unit_partner_id": "<t t-if="doc.transport_unit_partner_id.name" t-esc="doc.transport_unit_partner_id.name"/>",
+	"transport_unit_address": "<t t-if="doc.transport_unit_address" t-esc="doc.transport_unit_address"/>",
+	"transport_unit_tel": "<t t-if="doc.transport_unit_tel" t-esc="doc.transport_unit_tel"/>",
+	"transport_unit_zipcode": "<t t-if="doc.transport_unit_zipcode" t-esc="doc.transport_unit_zipcode"/>",
+	"receiving_unit_partner_id": "<t t-if="doc.receiving_unit_partner_id.name" t-esc="doc.receiving_unit_partner_id.name"/>",
+	"receiving_unit_address": "<t t-if="doc.receiving_unit_address" t-esc="doc.receiving_unit_address"/>",
+	"receiving_unit_tel": "<t t-if="doc.receiving_unit_tel" t-esc="doc.receiving_unit_tel"/>",
+	"receiving_unit_zipcode": "<t t-if="doc.receiving_unit_zipcode" t-esc="doc.receiving_unit_zipcode"/>",
+	"waste_id": "<t t-if="doc.waste_id.name" t-esc="doc.waste_id.name"/>",
+	"waste_code_l": "<t t-if="doc.waste_code_l" t-esc="doc.waste_code_l"/>",
+	"waste_code_m": "<t t-if="doc.waste_code_m" t-esc="doc.waste_code_m"/>",
+	"waste_code_r": "<t t-if="doc.waste_code_r" t-esc="doc.waste_code_r"/>",
+	"waste_type_id": "<t t-if="doc.waste_type_id.name" t-esc="doc.waste_type_id.name"/>",
+	"waste_feature_id": "<t t-if="doc.waste_feature_id.name" t-esc="doc.waste_feature_id.name"/>",
+	"waste_packing_id": "<t t-if="doc.waste_packing_id.name" t-esc="doc.waste_packing_id.name"/>",
+	"waste_pattern_id": "<t t-if="doc.waste_pattern_id.name" t-esc="doc.waste_pattern_id.name"/>",
+	
+	"waste_danger_ids":"<t t-foreach="doc.waste_danger_ids" t-as="danger"><span t-field="danger.name" t-field-options='{"fields": ["name"], "no_tag_br": true, "data_type": "raw"}' /></t>",
+	"waste_ban_ids":"<t t-foreach="doc.waste_ban_ids" t-as="ban"><span t-field="ban.name"/></t>",
+	
+	"quantity": "<t t-if="doc.quantity" t-esc="doc.quantity"/>",
+	"quantity_plan": "<t t-if="doc.quantity_plan" t-esc="doc.quantity_plan"/>",
+	"quantity_remaining": "<t t-if="doc.quantity_remaining" t-esc="doc.quantity_remaining"/>",
+	"transfer_purpose_storage": "<t t-if="doc.transfer_purpose_storage" t-esc="doc.transfer_purpose_storage"/>",
+	"transfer_purpose_use": "<t t-if="doc.transfer_purpose_use" t-esc="doc.transfer_purpose_use"/>",
+	"transfer_purpose_incineration": "<t t-if="doc.transfer_purpose_incineration" t-esc="doc.transfer_purpose_incineration"/>",
+	"transfer_purpose_landfill": "<t t-if="doc.transfer_purpose_landfill" t-esc="doc.transfer_purpose_landfill"/>",
+	"transfer_purpose_other": "<t t-if="doc.transfer_purpose_other" t-esc="doc.transfer_purpose_other"/>",
+	"shipper_partner_id": "<t t-if="doc.shipper_partner_id.name" t-esc="doc.shipper_partner_id.name"/>",
+	"transfer_destination": "<t t-if="doc.transfer_destination" t-esc="doc.transfer_destination"/>",
+	"transfer_date": "<t t-if="doc.transfer_date" t-esc="doc.transfer_date"/>",
+	"first_carrier_partner_id": "<t t-if="doc.first_carrier_partner_id.name" t-esc="doc.first_carrier_partner_id.name"/>",
+	"date_shipment_first_carrier": "<t t-if="doc.date_shipment_first_carrier" t-esc="doc.date_shipment_first_carrier"/>",
+	"first_vehicle_id": "<t t-if="doc.first_vehicle_id.name" t-esc="doc.first_vehicle_id.name"/>",
+	"first_rtc_number": "<t t-if="doc.first_rtc_number" t-esc="doc.first_rtc_number"/>",
+	"first_vehicle_model_id": "<t t-if="doc.first_vehicle_model_id.name" t-esc="doc.first_vehicle_model_id.name"/>",
+	"first_starting_point": "<t t-if="doc.first_starting_point" t-esc="doc.first_starting_point"/>",
+	"first_through_place": "<t t-if="doc.first_through_place" t-esc="doc.first_through_place"/>",
+	"first_transport_destination": "<t t-if="doc.first_transport_destination" t-esc="doc.first_transport_destination"/>",
+	"first_driver_partner_id": "<t t-if="doc.first_driver_partner_id.name" t-esc="doc.first_driver_partner_id.name"/>",
+	"receiving_unit_license_id": "<t t-if="doc.receiving_unit_license_id.name" t-esc="doc.receiving_unit_license_id.name"/>",
+	"receiver_partner_id": "<t t-if="doc.receiver_partner_id.name" t-esc="doc.receiver_partner_id.name"/>",
+	"receipt_date": "<t t-if="doc.receipt_date" t-esc="doc.receipt_date"/>",
+	"quantity_actual_receipt": "<t t-if="doc.quantity_actual_receipt" t-esc="doc.quantity_actual_receipt"/>",
+	"receiving_unit_contact_partner_id": "<t t-if="doc.receiving_unit_contact_partner_id.name" t-esc="doc.receiving_unit_contact_partner_id.name"/>",
+	"waste_disposal_method_use_material": "<t t-if="doc.waste_disposal_method_use_material" t-esc="doc.waste_disposal_method_use_material"/>",
+	"waste_disposal_method_use_energy": "<t t-if="doc.waste_disposal_method_use_energy" t-esc="doc.waste_disposal_method_use_energy"/>",
+	"waste_disposal_method_handle_incineration": "<t t-if="doc.waste_disposal_method_handle_incineration" t-esc="doc.waste_disposal_method_handle_incineration"/>",
+	"waste_disposal_method_handle_chemistry": "<t t-if="doc.waste_disposal_method_handle_chemistry" t-esc="doc.waste_disposal_method_handle_chemistry"/>",
+	"waste_disposal_method_handle_landfill": "<t t-if="doc.waste_disposal_method_handle_landfill" t-esc="doc.waste_disposal_method_handle_landfill"/>",
+	"waste_disposal_method_handle_other": "<t t-if="doc.waste_disposal_method_handle_other" t-esc="doc.waste_disposal_method_handle_other"/>",
+	"waste_disposal_method_storage": "<t t-if="doc.waste_disposal_method_storage" t-esc="doc.waste_disposal_method_storage"/>"
+	
+});
+
+
+
+</t>
+/*数据合并到总的数据对象*/
+
+_data["Tables"].push(_tableWaste);
+
+var _reportData = JSON.stringify(_data);  //转成json字符串
+
+console.log(_reportData);  //在浏览器控制台上打印json内容，便于排错，可去除
+/*生成数据之后，在cfprint_ext.js中会自动调用进行打印*/
+</script>
+
+
+    </t> <!-- End of cfprint.html_container -->
+</template>  <!-- End of report_saleorder -->
+
+    </data>
+</odoo>
+

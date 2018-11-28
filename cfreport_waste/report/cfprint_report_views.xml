@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+            id="action_report_waste_cfreport"
+            string="waste [CFReport]"
+            model="waste.transfer.form"
+            report_type="qweb-html"
+            file="cfreport_waste.report_waste"
+            name="cfreport_waste.report_waste"
+            print_report_name="waste"
+        />
+
+
+    </data>
+</odoo>
