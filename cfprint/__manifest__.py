@@ -32,10 +32,6 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base'],
-	
-	'qweb': [
-        #'static/src/xml/report.xml',
-    ],
 
     # always loaded
     'data': [
