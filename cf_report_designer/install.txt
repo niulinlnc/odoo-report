@@ -8,4 +8,4 @@ docker exec -ti -u root <容器名> /bin/bash
 ************************************
 
 安装pycryptodome:
-pip3 install pycryptodome
+pip3 install 安装pycryptodome

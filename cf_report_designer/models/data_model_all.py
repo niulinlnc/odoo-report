@@ -469,7 +469,7 @@ class oOOoo0000O0o0 ( models . Model ) :
  related_field_model_name = fields . Char ( related = "related_field_model_id.name" , string = u"关联数据表名称" , help = u"关联字段所在的model名称" )
  if 28 - 28: i1I1ii1II1iII . i1I1ii1II1iII % iIii1I11I1II1 * iIii1I11I1II1 . Ooo00oOo00o / i1I1ii1II1iII
  _sql_constraints = [
- ( 'uniq_repoer_model_field' , 'unique(report_id, model_id, field_id)' , u'报表 + 表 + 字段必须唯一!' ) ,
+ ( 'uniq_repoer_model_field' , 'unique(report_id, model_id, related_field_id, field_id)' , u'报表 + 表 + 关联上级字段 + 字段必须唯一!' ) ,
  ]
  if 27 - 27: ooOO00oOo + Oo - i1IIi
  @ api . model
@@ -481,7 +481,8 @@ class oOOoo0000O0o0 ( models . Model ) :
     vals [ "model_id" ] = oO00O000oO0 . model_id . id
     if 79 - 79: O0 * i11iIiiIii - oooO0oo0oOOOO / oooO0oo0oOOOO
     if 48 - 48: O0
-  self . search ( [ ( 'report_id' , '=' , vals . get ( "report_id" , 0 ) ) , ( 'model_id' , '=' , vals . get ( "model_id" , 0 ) ) , ( 'field_id' , '=' , vals . get ( "field_id" , 0 ) ) ] ) . unlink ( )
+  self . search ( [ ( 'report_id' , '=' , vals . get ( "report_id" , 0 ) ) , ( 'model_id' , '=' , vals . get ( "model_id" , 0 ) ) ,
+ ( 'related_field_id' , '=' , vals . get ( "related_field_id" , 0 ) ) , ( 'field_id' , '=' , vals . get ( "field_id" , 0 ) ) ] ) . unlink ( )
   if 93 - 93: i11iIiiIii - oo * oOoO0oo0OOOo * OoOO0ooOOoo0O % O0 + OoooooooOO
   return super ( oOOoo0000O0o0 , self ) . create ( vals )
   if 25 - 25: oooO0oo0oOOOO + o0000oOoOoO0o / Oo . Ooo00oOo00o % O0 * ooOO00oOo
@@ -560,7 +561,7 @@ class iiI1I1 ( models . Model ) :
  def _make_cfprint_json ( self , values ) :
   if 35 - 35: Oo + i1IIi % oOoO0oo0OOOo % OoOO0ooOOoo0O + iiiiIi11i
   if 17 - 17: i1IIi
-  def iiIi1i ( report_define , model , fields , docs , datas ) :
+  def iiIi1i ( report_define , model , fields , docs , datas , related_field = False ) :
    if 27 - 27: II11iiII * Oo . o0oo0o % oooO0oo0oOOOO * oooO0oo0oOOOO . i1IIi
    if 72 - 72: II11iiII % oOoO0oo0OOOo + ooOO00oOo / iiiiIi11i + oooO0oo0oOOOO
    def I1I1i ( lst ) :
@@ -576,8 +577,10 @@ class iiI1I1 ( models . Model ) :
    ii1 = { }
    if 1 - 1: Oo % iIii1I11I1II1 + OoO0O00 . iIii1I11I1II1 % oo
    o0o0oOoOO0O = model . model . replace ( "." , "_" )
-   if 16 - 16: oooO0oo0oOOOO % iIii1I11I1II1 . o0000oOoOoO0o
-   if 59 - 59: oo * II111iiii . O0
+   if related_field :
+    o0o0oOoOO0O = o0o0oOoOO0O + "_" + related_field . name . replace ( "." , "_" ) + "_" + str ( related_field . id )
+    if 16 - 16: oooO0oo0oOOOO % iIii1I11I1II1 . o0000oOoOoO0o
+    if 59 - 59: oo * II111iiii . O0
    for O000OoOO0 in docs :
     i1IiIII111i1 = { }
     if 57 - 57: o0000oOoOoO0o % o0000oOoOoO0o * i11iIiiIii
@@ -585,93 +588,93 @@ class iiI1I1 ( models . Model ) :
      try :
       if oO00O000oO0 . ttype in [ 'char' ] :
        if oO00O000oO0 . name == "type_name" :
-        if 7 - 7: O0 . o0000oOoOoO0o
-        if 51 - 51: ooOO00oOo - O0 % iiiiIi11i - II111iiii
-        pass
-       i1IiIII111i1 [ oO00O000oO0 . name ] = O000OoOO0 [ oO00O000oO0 . name ] or ""
-       if 31 - 31: i1I1ii1II1iII / OoO0O00 - i1I1ii1II1iII - II11iiII
+        IiII1IiiIiI1 . warning ( ">>>>>> field.name is type_name: model:%s, field: %s" % ( model . model , oO00O000oO0 . name ) )
+       i1IiIII111i1 [ oO00O000oO0 . name ] = O000OoOO0 [ oO00O000oO0 . name ] if O000OoOO0 [ oO00O000oO0 . name ] else ""
+       if 7 - 7: O0 . o0000oOoOoO0o
+       if 51 - 51: ooOO00oOo - O0 % iiiiIi11i - II111iiii
        if oO00O000oO0 . ttype == 'char' and O000OoOO0 [ oO00O000oO0 . name ] and len ( O000OoOO0 [ oO00O000oO0 . name ] ) > ii1 . get ( oO00O000oO0 . name , 0 ) :
         ii1 [ oO00O000oO0 . name ] = len ( O000OoOO0 [ oO00O000oO0 . name ] )
-        if 7 - 7: i1I1ii1II1iII % O0 . oOo0O0Ooo + oo - OoOO0ooOOoo0O
+        if 31 - 31: i1I1ii1II1iII / OoO0O00 - i1I1ii1II1iII - II11iiII
       elif oO00O000oO0 . ttype in [ 'boolean' ] :
        i1IiIII111i1 [ oO00O000oO0 . name ] = O000OoOO0 [ oO00O000oO0 . name ]
-       if 75 - 75: OoOO0ooOOoo0O
+       if 7 - 7: i1I1ii1II1iII % O0 . oOo0O0Ooo + oo - OoOO0ooOOoo0O
       elif oO00O000oO0 . ttype in [ 'integer' , 'float' ] :
        i1IiIII111i1 [ oO00O000oO0 . name ] = O000OoOO0 [ oO00O000oO0 . name ] if O000OoOO0 [ oO00O000oO0 . name ] != None else ""
-       if 71 - 71: Oo
+       if 75 - 75: OoOO0ooOOoo0O
       elif oO00O000oO0 . ttype == 'datetime' :
        i1IiIII111i1 [ oO00O000oO0 . name ] = O000OoOO0 [ oO00O000oO0 . name ] . strftime ( "%Y-%m-%d %H:%M:%S" ) if O000OoOO0 [ oO00O000oO0 . name ] else ""
-       if 53 - 53: OoooooooOO % o0000oOoOoO0o . oooO0oo0oOOOO / i11iIiiIii % i1I1ii1II1iII
+       if 71 - 71: Oo
       elif oO00O000oO0 . ttype == 'binary' :
-       iIiIIIIIii = O000OoOO0 [ oO00O000oO0 . name ] . strip ( ) . decode ( "UTF-8" ) . replace ( "\n" , "" ) if O000OoOO0 [ oO00O000oO0 . name ] else ""
-       i1IiIII111i1 [ oO00O000oO0 . name ] = "base64/jpg:%s" % ( iIiIIIIIii )
-       if 58 - 58: Ooo00oOo00o / oooO0oo0oOOOO . oOo0O0Ooo / OoooooooOO + o0oo0o
+       Ooo0o00o0o = O000OoOO0 [ oO00O000oO0 . name ] . strip ( ) . decode ( "UTF-8" ) . replace ( "\n" , "" ) if O000OoOO0 [ oO00O000oO0 . name ] else ""
+       i1IiIII111i1 [ oO00O000oO0 . name ] = "base64/jpg:%s" % ( Ooo0o00o0o )
+       if 7 - 7: O0 - OoO0O00 + oOoO0oo0OOOo + II111iiii + iIii1I11I1II1
       elif oO00O000oO0 . ttype in [ "one2many" , "many2many" ] and len ( oO00O000oO0 . related_external_field_ids ) > 0 :
-       O0OoO0ooOO0o = O000OoOO0 [ oO00O000oO0 . name ]
-       OoOo0oOooOoOO = oO00O000oO0 . related_external_field_ids
-       if 60 - 60: OoooooooOO % o0000oOoOoO0o * i1IIi
-       iI11 = self . env [ 'ir.model' ] . _get ( oO00O000oO0 . field_id . relation )
-       if O0OoO0ooOO0o and len ( O0OoO0ooOO0o ) > 0 and OoOo0oOooOoOO and len ( OoOo0oOooOoOO ) > 0 and iI11 :
-        iiIi1i ( report_define , iI11 , OoOo0oOooOoOO , O0OoO0ooOO0o , datas )
-        if 96 - 96: II11iiII
+       OOo0 = O000OoOO0 [ oO00O000oO0 . name ]
+       ii11I1 = oO00O000oO0 . related_external_field_ids
+       if 75 - 75: ooOO00oOo / II111iiii % O0
+       Ii111iIi1iIi = self . env [ 'ir.model' ] . _get ( oO00O000oO0 . field_id . relation )
+       if OOo0 and len ( OOo0 ) > 0 and ii11I1 and len ( ii11I1 ) > 0 and Ii111iIi1iIi :
+        iiIi1i ( report_define , Ii111iIi1iIi , ii11I1 , OOo0 , datas )
+        if 21 - 21: iiiiIi11i / oOoO0oo0OOOo + o0000oOoOoO0o + OoooooooOO
       elif oO00O000oO0 . ttype in [ 'many2one' ] :
-       i1IiIII111i1 [ oO00O000oO0 . name ] = O000OoOO0 [ oO00O000oO0 . name ] . id or ""
-       i1IiIII111i1 [ oO00O000oO0 . name + "_name" ] = O000OoOO0 [ oO00O000oO0 . name ] . name or ""
-       if 85 - 85: Ooo00oOo00o . oOo0O0Ooo / Oo . O0 % o0oo0o
-       if 90 - 90: OoO0O00 % O0 * iIii1I11I1II1 . i1I1ii1II1iII
+       i1IiIII111i1 [ oO00O000oO0 . name ] = O000OoOO0 [ oO00O000oO0 . name ] . id if O000OoOO0 [ oO00O000oO0 . name ] else ""
+       i1IiIII111i1 [ oO00O000oO0 . name + "_name" ] = O000OoOO0 [ oO00O000oO0 . name ] . name if O000OoOO0 [ oO00O000oO0 . name ] and O000OoOO0 [ oO00O000oO0 . name ] . name else ""
+       if 91 - 91: i11iIiiIii / i1IIi + i1I1ii1II1iII + Oo * i11iIiiIii
+       if 66 - 66: iIii1I11I1II1 % i1IIi - O0 + OoOO0ooOOoo0O * o0oo0o . oooO0oo0oOOOO
        if len ( i1IiIII111i1 [ oO00O000oO0 . name + "_name" ] ) > ii1 . get ( oO00O000oO0 . name + "_name" , 0 ) :
         ii1 [ oO00O000oO0 . name + "_name" ] = len ( i1IiIII111i1 [ oO00O000oO0 . name + "_name" ] )
-        if 8 - 8: Oo + II111iiii / i1I1ii1II1iII / OoOO0ooOOoo0O
+        if 52 - 52: Oo + O0 . i1I1ii1II1iII . oOoO0oo0OOOo . ooOO00oOo
        if len ( oO00O000oO0 . related_external_field_ids ) > 0 :
-        O0OoO0ooOO0o = O000OoOO0 [ oO00O000oO0 . name ]
-        OoOo0oOooOoOO = oO00O000oO0 . related_external_field_ids
-        if 74 - 74: O0 / i1IIi
-        iI11 = self . env [ 'ir.model' ] . _get ( oO00O000oO0 . field_id . relation )
-        if O0OoO0ooOO0o and len ( O0OoO0ooOO0o ) > 0 and OoOo0oOooOoOO and len ( OoOo0oOooOoOO ) > 0 and iI11 :
-         iiIi1i ( report_define , iI11 , OoOo0oOooOoOO , O0OoO0ooOO0o , datas )
-         if 78 - 78: OoooooooOO . ooOO00oOo + Oo - i1IIi
-     except Exception as ii1O0 :
-      IiII1IiiIiI1 . error ( _ ( u"生成康虎云报表打印数据出错。model: %s, field: %s, Error: %s" ) % ( model . model , oO00O000oO0 . name , ii1O0 ) )
-      if 33 - 33: i1IIi
+        OOo0 = O000OoOO0 [ oO00O000oO0 . name ]
+        ii11I1 = oO00O000oO0 . related_external_field_ids
+        if 97 - 97: oo / i1I1ii1II1iII
+        Ii111iIi1iIi = self . env [ 'ir.model' ] . _get ( oO00O000oO0 . field_id . relation )
+        if OOo0 and len ( OOo0 ) > 0 and ii11I1 and len ( ii11I1 ) > 0 and Ii111iIi1iIi :
+         iiIi1i ( report_define , Ii111iIi1iIi , ii11I1 , OOo0 , datas , oO00O000oO0 )
+         if 71 - 71: II111iiii / i1IIi . oOoO0oo0OOOo % OoooooooOO . oOo0O0Ooo
+     except Exception as Iiiiii111i1ii :
+      IiII1IiiIiI1 . error ( _ ( u"生成康虎云报表打印数据出错。model: %s, field: %s, Error: %s" ) % ( model . model , oO00O000oO0 . name , Iiiiii111i1ii ) )
+      pass
+      if 25 - 25: II11iiII - Oo / i11iIiiIii
     if i1IiIII111i1 :
      if not datas . get ( o0o0oOoOO0O , False ) :
       datas [ o0o0oOoOO0O ] = { "cols" : [ ] , "rows" : [ ] }
      datas [ o0o0oOoOO0O ] [ "rows" ] . append ( i1IiIII111i1 )
-     if 36 - 36: II111iiii % i11iIiiIii * oOo0O0Ooo + OoOO0ooOOoo0O
-     if 25 - 25: iIii1I11I1II1 % i1I1ii1II1iII . Oo
+     if 41 - 41: i1IIi % i1I1ii1II1iII + iIii1I11I1II1
+     if 2 - 2: iIii1I11I1II1 * OoO0O00 % iiiiIi11i - II111iiii - i1I1ii1II1iII
    for oO00O000oO0 in [ iIi1Ii1i1iI for iIi1Ii1i1iI in fields if iIi1Ii1i1iI . model_id . model == model . model ] :
-    IIIIi1 = "str"
+    iIi11iiIiI1I = "str"
     if oO00O000oO0 . ttype in [ "integer" ] :
-     IIIIi1 = "int"
+     iIi11iiIiI1I = "int"
     elif oO00O000oO0 . ttype in [ "float" ] :
-     IIIIi1 = "float"
+     iIi11iiIiI1I = "float"
     elif oO00O000oO0 . ttype in [ "datetime" ] :
-     IIIIi1 = "date"
+     iIi11iiIiI1I = "date"
     elif oO00O000oO0 . ttype in [ "boolean" ] :
-     IIIIi1 = "boolean"
+     iIi11iiIiI1I = "boolean"
     elif oO00O000oO0 . ttype in [ "binary" ] :
-     IIIIi1 = "blob"
+     iIi11iiIiI1I = "blob"
     elif oO00O000oO0 . ttype in [ "many2one" ] :
-     IIIIi1 = "int"
-     if 3 - 3: o0oo0o
-    i1iiIiI1Ii1i = 0
-    if IIIIi1 == "str" :
-     i1iiIiI1Ii1i = ii1 . get ( oO00O000oO0 . name , 20 )
-     if 22 - 22: oooO0oo0oOOOO / i11iIiiIii
+     iIi11iiIiI1I = "int"
+     if 3 - 3: i1IIi / II111iiii / i11iIiiIii * i1IIi - II111iiii
+    Ii = 0
+    if iIi11iiIiI1I == "str" :
+     Ii = ii1 . get ( oO00O000oO0 . name , 20 )
+     if 14 - 14: Ooo00oOo00o * iiiiIi11i
     if not datas . get ( o0o0oOoOO0O , False ) :
      datas [ o0o0oOoOO0O ] = { "cols" : [ ] , "rows" : [ ] }
-    datas [ o0o0oOoOO0O ] [ "cols" ] . append ( { "type" : IIIIi1 , "size" : i1iiIiI1Ii1i , "name" : oO00O000oO0 . name , "required" : False , "comment" : oO00O000oO0 . field_description } )
+    datas [ o0o0oOoOO0O ] [ "cols" ] . append ( { "type" : iIi11iiIiI1I , "size" : Ii , "name" : oO00O000oO0 . name , "required" : False , "comment" : oO00O000oO0 . field_description } )
     if oO00O000oO0 . ttype in [ "many2one" ] :
      datas [ o0o0oOoOO0O ] [ "cols" ] . append ( { "type" : "str" , "size" : ii1 . get ( oO00O000oO0 . name + "_name" , 20 ) , "name" : oO00O000oO0 . name + "_name" , "required" : False , "comment" : oO00O000oO0 . field_description } )
-     if 62 - 62: ooOO00oOo / oOoO0oo0OOOo
+     if 81 - 81: o0000oOoOoO0o * Ooo00oOo00o + o0oo0o + OoO0O00 - OoooooooOO
    datas [ o0o0oOoOO0O ] [ "cols" ] = I1I1i ( datas [ o0o0oOoOO0O ] [ "cols" ] )
    return datas
-   if 7 - 7: OoooooooOO . oooO0oo0oOOOO
-   if 53 - 53: o0000oOoOoO0o % o0000oOoOoO0o * Ooo00oOo00o + oOo0O0Ooo
-   if 92 - 92: OoooooooOO + i1IIi / o0000oOoOoO0o * O0
-  O00oOo00o0o = values . get ( "report_define" )
+   if 32 - 32: o0000oOoOoO0o * O0
+   if 100 - 100: Oo % iIii1I11I1II1 * II111iiii - i1I1ii1II1iII
+   if 92 - 92: Oo
+  II11iI111i1 = values . get ( "report_define" )
   ii111iI1iIi1 = ii1I . get_machine_code ( ) or ''
-  O00oO0 = {
+  Oo00OoOo = {
  "template" : "" ,
  "ver" : 4 ,
  "Copies" : 1 ,
@@ -679,69 +682,69 @@ class iiI1I1 ( models . Model ) :
  "mcode" : ii111iI1iIi1 ,
  "Tables" : [ ]
  }
-  if 70 - 70: OoOO0ooOOoo0O . oOoO0oo0OOOo * OoooooooOO - oooO0oo0oOOOO * oo + oOo0O0Ooo
-  iIi1 = self . _context . get ( "is_design" , False )
-  if iIi1 :
-   O00oO0 [ "design" ] = True
-   i11iiI1111 = oOo0O % ( _ ( u"""请在康虎云报表设计器设计报表。<br/>
+  if 24 - 24: i11iIiiIii - o0oo0o
+  i11iiI1111 = self . _context . get ( "is_design" , False )
+  if i11iiI1111 :
+   Oo00OoOo [ "design" ] = True
+   oOoooo000Oo00 = oOo0O % ( _ ( u"""请在康虎云报表设计器设计报表。<br/>
             如果报表设计器未打开，请检查康虎云报表是否已启动！<br/><br/><br/>
             模板设计完成后，请在odoo菜单“康虎云报表”--&gt;“模板”菜单中，打开模板记录上传或更新模板！<br/><br/>
             <a href=\"cfprint://open\">启动康虎云报表</a>
             """ ) )
-   values . update ( show_message = i11iiI1111 )
-   if 97 - 97: OoO0O00 * oo . iIii1I11I1II1
-  if O00oOo00o0o . use_client_templ and O00oOo00o0o . client_templ_name :
-   O00oO0 [ "template" ] = O00oOo00o0o . client_templ_name
+   values . update ( show_message = oOoooo000Oo00 )
+   if 93 - 93: oOoO0oo0OOOo / oo / iIii1I11I1II1 % o0oo0o % o0oo0o
+  if II11iI111i1 . use_client_templ and II11iI111i1 . client_templ_name :
+   Oo00OoOo [ "template" ] = II11iI111i1 . client_templ_name
   else :
-   if not O00oOo00o0o . template_id or not O00oOo00o0o . template_id . templ_id :
+   if not II11iI111i1 . template_id or not II11iI111i1 . template_id . templ_id :
     values . update ( show_message = oOo0O % ( _ ( u"未指定要打印的报表模板，请先指定报表模板。" ) ) )
-   I1Ii1111iIi = self . env [ 'cf.template' ] . search ( [ ( 'templ_id' , '=' , O00oOo00o0o . template_id . templ_id ) ] , limit = 1 ) . template
-   if not I1Ii1111iIi or I1Ii1111iIi == "" :
-    if not iIi1 :
+   IiI11iI1i1i1i = self . env [ 'cf.template' ] . search ( [ ( 'templ_id' , '=' , II11iI111i1 . template_id . templ_id ) ] , limit = 1 ) . template
+   if not IiI11iI1i1i1i or IiI11iI1i1i1i == "" :
+    if not i11iiI1111 :
      values . update ( show_message = oOo0O % ( _ ( u"指定的报表模板未定义或模板无内容，请先设计模板并更新到模板记录表。</h3>" ) ) )
     else :
-     O00oO0 [ "template" ] = "cf_templ_%s" % ( O00oOo00o0o . name . replace ( '.' , '_' ) )
+     Oo00OoOo [ "template" ] = "cf_templ_%s" % ( II11iI111i1 . name . replace ( '.' , '_' ) )
    else :
-    O00oO0 [ "template" ] = "base64:" + I1Ii1111iIi . strip ( ) . decode ( "UTF-8" ) . replace ( "\n" , "" )
-    if 31 - 31: OoOO0ooOOoo0O . o0oo0o * Oo + i11iIiiIii * iiiiIi11i
+    Oo00OoOo [ "template" ] = "base64:" + IiI11iI1i1i1i . strip ( ) . decode ( "UTF-8" ) . replace ( "\n" , "" )
+    if 89 - 89: OoOO0ooOOoo0O
   IiIi1I1 = { }
   OO0000o = values . get ( "docs" )
   if not OO0000o or len ( OO0000o ) < 1 :
-   OO0o = self . _context . get ( "active_ids" , [ ] )
-   OO0000o = self . env [ O00oOo00o0o . model_id . model ] . browse ( OO0o )
-   if 75 - 75: OoooooooOO * oooO0oo0oOOOO
-  iiIi1i ( O00oOo00o0o , O00oOo00o0o . model_id , O00oOo00o0o . field_ids , OO0000o , IiIi1I1 )
-  if 9 - 9: oooO0oo0oOOOO - II111iiii + O0 / iIii1I11I1II1 / i11iIiiIii
-  if 39 - 39: oooO0oo0oOOOO * OoO0O00 + iIii1I11I1II1 - oooO0oo0oOOOO + II11iiII
-  for o0 , ( iiiI1I1iIIIi1 , Iii ) in enumerate ( IiIi1I1 . items ( ) ) :
-   I1iiiiI1iI = string . capwords ( iiiI1I1iIIIi1 ) . replace ( "." , "_" )
-   iIiiiii1i = Iii [ "cols" ]
-   iiIi1IIiI = Iii [ "rows" ]
-   O00oO0 [ "Tables" ] . append ( {
- "Name" : I1iiiiI1iI ,
- "Cols" : iIiiiii1i ,
- "Data" : iiIi1IIiI ,
+   Ooooooo = self . _context . get ( "active_ids" , [ ] )
+   OO0000o = self . env [ II11iI111i1 . model_id . model ] . browse ( Ooooooo )
+   if 39 - 39: oooO0oo0oOOOO * OoO0O00 + iIii1I11I1II1 - oooO0oo0oOOOO + II11iiII
+  iiIi1i ( II11iI111i1 , II11iI111i1 . model_id , II11iI111i1 . field_ids , OO0000o , IiIi1I1 )
+  if 69 - 69: O0
+  if 85 - 85: Oo / O0
+  for iI1iIIIi1i , ( oooOooooO0oOO , Iiiiii1iI ) in enumerate ( IiIi1I1 . items ( ) ) :
+   IIi = string . capwords ( oooOooooO0oOO ) . replace ( "." , "_" )
+   ooOooo0 = Iiiiii1iI [ "cols" ]
+   oO0OO0 = Iiiiii1iI [ "rows" ]
+   Oo00OoOo [ "Tables" ] . append ( {
+ "Name" : IIi ,
+ "Cols" : ooOooo0 ,
+ "Data" : oO0OO0 ,
  } )
-   if 23 - 23: o0000oOoOoO0o . II11iiII
-  return O00oO0
-  if 9 - 9: Oo - oOoO0oo0OOOo - i1I1ii1II1iII
- def _set_report_data ( self , values , report_data ) :
-  if 82 - 82: oooO0oo0oOOOO - oooO0oo0oOOOO + oOo0O0Ooo
+   if 82 - 82: oooO0oo0oOOOO - oooO0oo0oOOOO + oOo0O0Ooo
+  return Oo00OoOo
   if 8 - 8: Ooo00oOo00o % i1I1ii1II1iII * iiiiIi11i % o0000oOoOoO0o . Oo / Oo
+ def _set_report_data ( self , values , report_data ) :
   if 81 - 81: ooOO00oOo
-  oO0o00oOOooO0 = [
+  if 99 - 99: iiiiIi11i * II111iiii * o0oo0o
+  if 92 - 92: OoO0O00
+  iI11I = [
  "var cfprint_addr = \"127.0.0.1\"" ,
  "var _delay_close = -1"
  ]
   IiII1IiiIiI1 . debug ( 'Dump report data to json...' )
-  OOOoO000 = json . dumps ( report_data )
+  ooO000 = json . dumps ( report_data )
   if 57 - 57: II111iiii
   if 54 - 54: OoO0O00 + iiiiIi11i + i11iIiiIii
   IiII1IiiIiI1 . debug ( 'Encrypt report data...' )
   o0o = ii1I . rand_aes_key ( 16 , False )
   IiII1IiiIiI1 . debug ( "AES Key: %s" % ( o0o ) )
   i1i1ii111 = ii1I ( o0o , AES . MODE_CBC )
-  IiI1i = i1i1ii111 . encrypt ( OOOoO000 )
+  IiI1i = i1i1ii111 . encrypt ( ooO000 )
   if 87 - 87: Oo
   if 45 - 45: ooOO00oOo / OoooooooOO - i1I1ii1II1iII / o0000oOoOoO0o % oooO0oo0oOOOO
   IiII1IiiIiI1 . debug ( 'Encrypt key...' )
@@ -761,10 +764,10 @@ class iiI1I1 ( models . Model ) :
   if 85 - 85: iiiiIi11i - iIii1I11I1II1 / O0
   IiII1IiiIiI1 . debug ( 'Dump final_data...' )
   if 99 - 99: II111iiii * oooO0oo0oOOOO % iIii1I11I1II1 / o0000oOoOoO0o
-  oO0o00oOOooO0 . append ( "var _data = %s" % ( json . dumps ( OooOOOOoO00OoOO ) ) )
+  iI11I . append ( "var _data = %s" % ( json . dumps ( OooOOOOoO00OoOO ) ) )
   if 90 - 90: iiiiIi11i % II11iiII - II11iiII % II111iiii * ooOO00oOo
-  oO0o00oOOooO0 . append ( """_reportData = JSON.stringify(_data);\nconsole.log(_reportData);""" )
-  iIi1iI111I = ";\n" . join ( oO0o00oOOooO0 )
+  iI11I . append ( """_reportData = JSON.stringify(_data);\nconsole.log(_reportData);""" )
+  iIi1iI111I = ";\n" . join ( iI11I )
   IiII1IiiIiI1 . debug ( 'json_data: %s ...' % ( iIi1iI111I [ 0 : 300 ] ) )
   if 85 - 85: OoooooooOO * iIii1I11I1II1 . i1I1ii1II1iII / OoooooooOO % oo % O0
   values . update (
@@ -787,16 +790,16 @@ class iiI1I1 ( models . Model ) :
   if not Ooo0OOoOoO0 :
    raise AccessError ( _ ( u"未找到报表（%s）定义，可能是报表未定义或定义未生效，如果使用康虎云报表，请在报表定义中重新生成一下报表定义！" % ( template ) ) )
    if 89 - 89: o0oo0o + OoooooooOO + o0oo0o * i1IIi + iIii1I11I1II1 % OoOO0ooOOoo0O
-  i11iiI1111 = oOo0O % ( _ ( u"正在打印，请稍候...<br/><br/>如果打印机未输出报表，请检查康虎云报表是否已启动！<br/><br/><a href=\"cfprint://open\">启动康虎云报表</a>" ) )
+  oOoooo000Oo00 = oOo0O % ( _ ( u"正在打印，请稍候...<br/><br/>如果打印机未输出报表，请检查康虎云报表是否已启动！<br/><br/><a href=\"cfprint://open\">启动康虎云报表</a>" ) )
   if 59 - 59: II11iiII + i11iIiiIii
   IiII1IiiIiI1 . debug ( "Prepare docs..." )
   OO0000o = values . get ( "docs" , False )
   if not OO0000o or len ( OO0000o ) < 1 :
-   OO0o = self . _context . get ( "active_ids" , [ ] )
-   OO0000o = self . env [ Ooo0OOoOoO0 . model ] . browse ( OO0o )
+   Ooooooo = self . _context . get ( "active_ids" , [ ] )
+   OO0000o = self . env [ Ooo0OOoOoO0 . model ] . browse ( Ooooooo )
    values . update ( docs = OO0000o )
   if not OO0000o or len ( OO0000o ) < 1 :
-   i11iiI1111 = oOo0O % ( _ ( u"没有可以打印数据。" ) )
+   oOoooo000Oo00 = oOo0O % ( _ ( u"没有可以打印数据。" ) )
    if 88 - 88: i11iIiiIii - Oo
   IiII1IiiIiI1 . debug ( "Retrieve report define..." )
   if 67 - 67: II11iiII . OoO0O00 + oOo0O0Ooo - OoooooooOO
@@ -807,7 +810,7 @@ class iiI1I1 ( models . Model ) :
    OOOoO = OOOoO [ 0 ] . replace ( i1I , "" )
    if 14 - 14: OoOO0ooOOoo0O . iIii1I11I1II1 . OoooooooOO . II111iiii / Ooo00oOo00o
   values . update (
- show_message = i11iiI1111
+ show_message = oOoooo000Oo00
  )
   if 21 - 21: i11iIiiIii / i1IIi + oo * II11iiII . o0oo0o
   if 84 - 84: O0 . OoOO0ooOOoo0O - II111iiii . Oo / II111iiii
@@ -851,7 +854,7 @@ class iiI1I1 ( models . Model ) :
    if not docids :
     docids = data . get ( "docids" , None )
     if 31 - 31: II11iiII / OoO0O00 * i1IIi . oOo0O0Ooo
-   i11iiI1111 = oOo0O % ( _ ( u"正在打印，请稍候...<br/><br/>如果打印机未输出报表，请检查康虎云报表是否已启动！<br/><br/><a href=\"cfprint://open\">启动康虎云报表</a>" ) )
+   oOoooo000Oo00 = oOo0O % ( _ ( u"正在打印，请稍候...<br/><br/>如果打印机未输出报表，请检查康虎云报表是否已启动！<br/><br/><a href=\"cfprint://open\">启动康虎云报表</a>" ) )
    if 57 - 57: II11iiII + iIii1I11I1II1 % i1IIi % oo
    OO0000o = data . get ( "docs" , False )
    if 83 - 83: Ooo00oOo00o / i11iIiiIii % iIii1I11I1II1 . OoOO0ooOOoo0O % iiiiIi11i . OoooooooOO
@@ -859,9 +862,9 @@ class iiI1I1 ( models . Model ) :
     OO0000o = self . env [ iii1 . model_id . model ] . browse ( docids )
     if 94 - 94: o0000oOoOoO0o + iIii1I11I1II1 % ooOO00oOo
    if not OO0000o or len ( OO0000o ) < 1 :
-    i11iiI1111 = oOo0O % ( _ ( u"没有可以%s数据。" ) % ( oO0OoOO ) )
+    oOoooo000Oo00 = oOo0O % ( _ ( u"没有可以%s数据。" ) % ( oO0OoOO ) )
     if 93 - 93: o0000oOoOoO0o - II11iiII + iIii1I11I1II1 * Ooo00oOo00o + o0oo0o . i1I1ii1II1iII
-   data . update ( docs = OO0000o , show_message = i11iiI1111 , )
+   data . update ( docs = OO0000o , show_message = oOoooo000Oo00 , )
    if 49 - 49: OoooooooOO * OoOO0ooOOoo0O - OoO0O00 . iiiiIi11i
    if iii1 :
     data . update ( report_define = iii1 , )
